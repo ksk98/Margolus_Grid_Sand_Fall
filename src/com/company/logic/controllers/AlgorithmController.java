@@ -43,6 +43,7 @@ public class AlgorithmController {
 
             thread.setTempo(invertedValue);
         });
+        thread.setTempo(tempo.getValue());
 
         JButton mode = controlPanel.getMode();
         mode.addActionListener(actionEvent -> {

@@ -35,8 +35,10 @@ public class AlgorithmImpl implements Algorithm {
 
     private int getCellContent(int x ,int y) {
         // Cells outside our matrix are treated as walls
-        if (x < 0 || y < 0 || x >= matrix[0].length || y >= matrix.length)
+        if (x < 0 || y < 0 || x >= matrix[0].length)
             return WALL;
+        else if (y >= matrix.length)
+            return EMPTY;
 
         return matrix[y][x];
     }
@@ -46,7 +48,7 @@ public class AlgorithmImpl implements Algorithm {
         if (type == SAND)
             possible = display.drawOn(x, y);
         else if (type == EMPTY)
-            display.eraseFrom(x, y);
+            possible = display.eraseFrom(x, y);
 
         if (possible)
             matrix[y][x] = type;
@@ -68,7 +70,6 @@ public class AlgorithmImpl implements Algorithm {
 
     private Cube getNextCube() {
         Coordinate currentCoordinate = iterator.next();
-        // if null return?
 
         int[][] pattern = new int[2][2];
         // pattern[y][x]
@@ -143,7 +144,7 @@ public class AlgorithmImpl implements Algorithm {
                         // Top left is sand and can fall directly down
                         currentCube.pattern[0][0] = EMPTY;
                         currentCube.pattern[1][0] = SAND;
-                    } else if (currentCube.pattern[1][1] == EMPTY && currentCube.pattern[0][1] != SAND) {
+                    } else if (currentCube.pattern[1][1] == EMPTY && currentCube.pattern[0][1] == EMPTY) {
                         // Top left is sand and can't fall directly down but can fall sideways
                         currentCube.pattern[0][0] = EMPTY;
                         currentCube.pattern[1][1] = SAND;
@@ -155,7 +156,7 @@ public class AlgorithmImpl implements Algorithm {
                         // Top right is sand and can fall directly down
                         currentCube.pattern[0][1] = EMPTY;
                         currentCube.pattern[1][1] = SAND;
-                    } else if (currentCube.pattern[1][0] == EMPTY /* && currentCube.pattern[0][0] != SAND */) {
+                    } else if (currentCube.pattern[1][0] == EMPTY && currentCube.pattern[0][0] == EMPTY ) {
                         // Top right is sand and can't fall directly down but can fall sideways
                         currentCube.pattern[0][1] = EMPTY;
                         currentCube.pattern[1][0] = SAND;

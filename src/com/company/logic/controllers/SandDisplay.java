@@ -19,11 +19,13 @@ public class SandDisplay {
 
         return true;
     }
-    public void eraseFrom(int x, int y) {
+    public boolean eraseFrom(int x, int y) {
         try {
             drawBoard.draw(x, y, IconCreator.makeIconOfType(IconCreator.TypeColor.EMPTY));
         } catch (IndexOutOfBoundsException e) {
-            // Shouldn't happen, if somehow does just ignore it
+            return false;
         }
+
+        return true;
     }
 }

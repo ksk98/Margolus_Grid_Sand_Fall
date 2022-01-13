@@ -10,8 +10,8 @@ public class ControlPanel extends JPanel {
     public ControlPanel() {
         startStop = new JButton("START");
         step = new JButton("STEP");
-        tempo = new JSlider(SwingConstants.HORIZONTAL, 1, 100, 30);
-        mode = new JButton("LINE");
+        tempo = new JSlider(SwingConstants.HORIZONTAL, 30, 95, 50);
+        mode = new JButton("CENTER");
         exit = new JButton("EXIT");
 
         setLayout(new FlowLayout());

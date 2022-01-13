@@ -3,8 +3,8 @@ package com.company.logic.controllers;
 import com.company.logic.algorithm.Algorithm;
 
 public class AlgorithmAnimatorThread extends Thread {
-    private final int maxFrameWaitInMs = 1000;
-    private int currentFrameWaitInMs = 300;
+    private final int maxFrameWaitInMs = 80;
+    private int currentFrameWaitInMs;
     private boolean pause = true, abort = false;
 
     private final Algorithm algorithm;
