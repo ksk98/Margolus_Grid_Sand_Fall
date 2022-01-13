@@ -14,7 +14,7 @@ public class AlgorithmImpl implements Algorithm {
     private SandDisplay display;
     private LinkedList<Coordinate> gridIndexes;
 
-    private static final int grainSpawnChance = 20;
+    private static final int grainSpawnChance = 40;
     private Mode spawnMode;
     private Iterator<Coordinate> iterator;
     private boolean iterationIsEven = true;
@@ -26,9 +26,7 @@ public class AlgorithmImpl implements Algorithm {
         this.display = display;
         this.spawnMode = Mode.LINE;
 
-        iterator = gridIndexes.descendingIterator();
         currentPhase = Phase.SPAWNING;
-        setGridIndexes();
     }
 
     private void spawnGrain(int x, int y) {
@@ -44,25 +42,27 @@ public class AlgorithmImpl implements Algorithm {
     }
 
     private void writeToMatrix(int x, int y, int type) {
-        matrix[y][x] = type;
+        boolean possible = true;
         if (type == SAND)
-            display.drawOn(x, y);
+            possible = display.drawOn(x, y);
         else if (type == EMPTY)
             display.eraseFrom(x, y);
+
+        if (possible)
+            matrix[y][x] = type;
     }
 
     private void updateCube(Cube cube) {
         int[][] pattern = cube.pattern;
 
-        if (pattern[0][0] == SAND)
-            display.drawOn(cube.x, cube.y);
-        else if (pattern[0][0] == EMPTY)
-            display.eraseFrom(cube.x, cube.y);
-
-        for (int i = 0; i < pattern.length; i++)
-            for (int j = 0; j < pattern[i].length; j++)
-                if (pattern[j][i] != WALL)
-                    writeToMatrix(cube.x + j, cube.y + i, pattern[j][i]);
+        for (int i = 0; i < pattern.length; i++) {
+            for (int j = 0; j < pattern[i].length; j++) {
+                if (cube.pattern[i][j] == SAND)
+                    writeToMatrix(cube.x + j, cube.y + i, SAND);
+                else if (cube.pattern[i][j] == EMPTY)
+                    writeToMatrix(cube.x + j, cube.y + i, EMPTY);
+            }
+        }
 
     }
 
@@ -93,13 +93,14 @@ public class AlgorithmImpl implements Algorithm {
         } else {
             for (int i = -1; i < matrix.length; i++) {
                 for (int j = -1; j < matrix[0].length; j++) {
-                    if (i % 2 == 0 && j % 2 == 0)
+                    if (i % 2 == 1 && j % 2 == 1)
                         gridIndexes.add(new Coordinate(j, i));
                 }
             }
         }
 
         iterationIsEven = !iterationIsEven;
+        iterator = gridIndexes.descendingIterator();
     }
 
     @Override
@@ -109,7 +110,7 @@ public class AlgorithmImpl implements Algorithm {
                 Random random = new Random();
 
                 for (int i = 0; i < matrix[0].length; i++)
-                    if (random.nextInt(100) < grainSpawnChance)
+                    if (matrix[0][i] == EMPTY && random.nextInt(100) < grainSpawnChance)
                         spawnGrain(i, 0);
 
             } else if (spawnMode == Mode.CENTER) {
@@ -118,15 +119,48 @@ public class AlgorithmImpl implements Algorithm {
             }
 
             currentPhase = Phase.DROPPING;
+            setGridIndexes();
         } else if (currentPhase == Phase.DROPPING) {
             if (!iterator.hasNext()) {
-                setGridIndexes();
                 currentPhase = Phase.SPAWNING;
             } else {
-                Cube currentCube = getNextCube();
+                Cube currentCube = null;
+                while (iterator.hasNext()) {
+                    Cube tempCube = getNextCube();
+                    if (tempCube.hasSand()) {
+                        currentCube = tempCube;
+                        break;
+                    }
+                }
 
-                // TODO: change pattern accordingly
-                // TODO: later make code that calls the steps
+                if (currentCube == null) {
+                    currentPhase = Phase.SPAWNING;
+                    return;
+                }
+
+                if (currentCube.pattern[0][0] == SAND) {
+                    if (currentCube.pattern[1][0] == EMPTY) {
+                        // Top left is sand and can fall directly down
+                        currentCube.pattern[0][0] = EMPTY;
+                        currentCube.pattern[1][0] = SAND;
+                    } else if (currentCube.pattern[1][1] == EMPTY && currentCube.pattern[0][1] != SAND) {
+                        // Top left is sand and can't fall directly down but can fall sideways
+                        currentCube.pattern[0][0] = EMPTY;
+                        currentCube.pattern[1][1] = SAND;
+                    }
+                }
+
+                if (currentCube.pattern[0][1] == SAND) {
+                    if (currentCube.pattern[1][1] == EMPTY) {
+                        // Top right is sand and can fall directly down
+                        currentCube.pattern[0][1] = EMPTY;
+                        currentCube.pattern[1][1] = SAND;
+                    } else if (currentCube.pattern[1][0] == EMPTY /* && currentCube.pattern[0][0] != SAND */) {
+                        // Top right is sand and can't fall directly down but can fall sideways
+                        currentCube.pattern[0][1] = EMPTY;
+                        currentCube.pattern[1][0] = SAND;
+                    }
+                }
 
                 updateCube(currentCube);
             }

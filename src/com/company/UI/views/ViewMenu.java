@@ -10,7 +10,6 @@ public class ViewMenu extends ViewBase {
     private final JButton simulate;
 
     public ViewMenu() {
-//        setPreferredSize(new Dimension(300, 100));
         setLayout(new GridLayout(2, 0));
 
         filePickerPanel = new FilePickerPanel();

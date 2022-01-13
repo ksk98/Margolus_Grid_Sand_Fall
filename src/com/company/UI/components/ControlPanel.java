@@ -4,12 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ControlPanel extends JPanel {
-    private final JButton startStop, step, tempo, mode, exit;
+    private final JButton startStop, step, mode, exit;
+    private final JSlider tempo;
 
     public ControlPanel() {
         startStop = new JButton("START");
         step = new JButton("STEP");
-        tempo = new JButton("FASTER");
+        tempo = new JSlider(SwingConstants.HORIZONTAL, 1, 100, 30);
         mode = new JButton("LINE");
         exit = new JButton("EXIT");
 
@@ -30,7 +31,7 @@ public class ControlPanel extends JPanel {
         return step;
     }
 
-    public JButton getTempo() {
+    public JSlider getTempo() {
         return tempo;
     }
 

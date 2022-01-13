@@ -10,12 +10,14 @@ public class SandDisplay {
         this.drawBoard = drawBoard;
     }
 
-    public void drawOn(int x, int y) {
+    public boolean drawOn(int x, int y) {
         try {
             drawBoard.draw(x, y, IconCreator.makeIconOfType(IconCreator.TypeColor.SAND));
         } catch (IndexOutOfBoundsException e) {
-            // Sand fell of the map, so just don't draw it.
+            return false;
         }
+
+        return true;
     }
     public void eraseFrom(int x, int y) {
         try {

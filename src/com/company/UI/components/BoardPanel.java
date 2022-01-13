@@ -17,14 +17,6 @@ public class BoardPanel extends JPanel implements DrawBoard {
         drawFromData(data);
     }
 
-    public void draw(int x, int y, ImageIcon icon) {
-        if (x < 0 || x >= sizeX || y < 0 || y >= sizeY)
-            throw new IndexOutOfBoundsException();
-
-        JLabel selected = (JLabel) getComponentAt(x, y);
-        selected.setIcon(icon);
-    }
-
     public void drawFromData(int[][] data) {
         for (int i = 0; i < sizeY; i++) {
             for (int j = 0; j < sizeX; j++) {
@@ -42,5 +34,14 @@ public class BoardPanel extends JPanel implements DrawBoard {
         for (int i = 0; i < sizeY; i++)
             for (int j = 0; j < sizeX; j++)
                 add(new JLabel(IconCreator.makeIconOfType(IconCreator.TypeColor.EMPTY)));
+    }
+
+    @Override
+    public void draw(int x, int y, ImageIcon icon) {
+        if (x < 0 || x >= sizeX || y < 0 || y >= sizeY)
+            throw new IndexOutOfBoundsException();
+
+        JLabel selected = (JLabel) getComponent((y * sizeX) + x);
+        selected.setIcon(icon);
     }
 }
