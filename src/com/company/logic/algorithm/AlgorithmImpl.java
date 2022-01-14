@@ -16,6 +16,7 @@ public class AlgorithmImpl implements Algorithm {
 
     private static final int grainSpawnChance = 40;
     private Mode spawnMode;
+
     private Iterator<Coordinate> iterator;
     private boolean iterationIsEven = true;
     private Phase currentPhase;
@@ -93,6 +94,8 @@ public class AlgorithmImpl implements Algorithm {
             }
         } else {
             for (int i = -1; i < matrix.length; i++) {
+                if (i % 2 == 1)
+                    gridIndexes.add(new Coordinate(-1, i));
                 for (int j = -1; j < matrix[0].length; j++) {
                     if (i % 2 == 1 && j % 2 == 1)
                         gridIndexes.add(new Coordinate(j, i));
